@@ -3,12 +3,12 @@ require('dotenv').config();
 
 // Initialize database connection
 const db = new Sequelize({
-    dialect: process.env.DB_TYPE,
-    storage: `database/${process.env.DB_NAME}` || 'database/company_projects.db',
+    dialect: process.env.DB_TYPE || 'sqlite',
+    storage: process.env.DB_NAME ? `database/${process.env.DB_NAME}` : 'database/company_projects.db',
     logging: false
 });
 
-// User Model
+// User Model (with role)
 const User = db.define('User', {
     id: {
         type: DataTypes.INTEGER,
@@ -28,7 +28,14 @@ const User = db.define('User', {
         type: DataTypes.STRING,
         allowNull: false
     },
-    // TODO: Add role field (employee, manager, admin)
+    role: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: 'employee',
+        validate: {
+            isIn: [['employee', 'manager', 'admin']]
+        }
+    }
 });
 
 // Project Model
@@ -92,7 +99,7 @@ async function initializeDatabase() {
     try {
         await db.authenticate();
         console.log('Database connection established successfully.');
-        
+
         await db.sync({ force: false });
         console.log('Database synchronized successfully.');
     } catch (error) {

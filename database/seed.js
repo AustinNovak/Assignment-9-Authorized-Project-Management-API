@@ -7,33 +7,27 @@ async function seedDatabase() {
         await db.sync({ force: true });
         console.log('Database reset successfully.');
 
-        // Create sample users
+        // Create sample users with roles
         const hashedPassword = await bcrypt.hash('password123', 10);
         
         const users = await User.bulkCreate([
             {
                 name: 'John Employee',
                 email: 'john@company.com',
-                password: hashedPassword
-                // TODO: Add role: 'employee'
-
-
+                password: hashedPassword,
+                role: 'employee'
             },
             {
                 name: 'Sarah Manager',
                 email: 'sarah@company.com',
-                password: hashedPassword
-                // TODO: Add role: 'manager'
-
-
+                password: hashedPassword,
+                role: 'manager'
             },
             {
                 name: 'Mike Admin',
                 email: 'mike@company.com',
-                password: hashedPassword
-                // TODO: Add role: 'admin'
-
-                
+                password: hashedPassword,
+                role: 'admin'
             }
         ]);
 
